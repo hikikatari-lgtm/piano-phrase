@@ -38,7 +38,7 @@ export const c7alt: Phrase = {
         { midi: 73, deg: "♭9" },  // D♭5
         { midi: 68, deg: "♭13" }, // A♭4
         { midi: 70, deg: "♭7" },  // B♭4
-        { midi: 72, deg: "5th", resolve: true }, // C5 = Fmaj7 の 5th
+        { midi: 72, deg: "R", resolve: true }, // C5 = C7alt の R（Fmaj7 では 5th になる）
       ],
     },
   ],
