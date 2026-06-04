@@ -8,7 +8,7 @@ export const c7alt: Phrase = {
   id: "c7alt",
   title: "C7alt → Fmaj7（ピアノ右手）",
   subtitle: "V7alt → Imaj7 を鍵盤で — テンションから戻る",
-  key: "C",
+  key: "F",
   progression: "V-I (to F major)",
   technique: ["altered"],
   range: [60, 84], // C4〜C6
