@@ -33,7 +33,7 @@ export default function Keyboard({ scale, lick, hot = -1, range }: Props) {
   const blackW = 22;
   const blackH = whiteH * 0.62;
   const width = whiteMidis.length * whiteW;
-  const labelArea = 18; // 鍵盤上にステップ番号を出すスペース
+  const labelArea = 4; // 鍵盤の上余白（弾き順番号は出さない）
   const height = whiteH + labelArea;
 
   // 白鍵の x（左端）座標
@@ -51,17 +51,18 @@ export default function Keyboard({ scale, lick, hot = -1, range }: Props) {
   }
   const lickActive = !!lick;
 
-  // 各鍵の度数ラベル描画
+  // 各鍵の度数ラベル描画（scale または lick に含まれていれば描く）
   const renderMarker = (midi: number, cx: number, cy: number) => {
     const sNote = scaleMap.get(midi);
-    if (!sNote) return null;
     const lickEntry = lickMap.get(midi);
+    if (!sNote && !lickEntry) return null;
     const inLick = !!lickEntry;
-    // リック表示中：scale は薄く、lick の音は濃く
+    // リック表示中：scale only は薄く、lick の音は濃く
     const dim = lickActive && !inLick;
     const isHot = hot >= 0 && lick && lick[hot]?.midi === midi;
     const resolve = !!lickEntry?.note.resolve;
-    const deg = lickEntry?.note.deg ?? sNote.deg;
+    // lick の度数を優先（あれば）、無ければ scale の度数
+    const deg = lickEntry?.note.deg ?? sNote!.deg;
     const color = isHot
       ? "var(--amber)"
       : resolve
@@ -160,35 +161,6 @@ export default function Keyboard({ scale, lick, hot = -1, range }: Props) {
           const cy = labelArea + blackH - 16;
           return renderMarker(m, cx, cy);
         })}
-        {/* ステップ番号（リック内の弾き順） */}
-        {lick &&
-          lick.map((n, step) => {
-            const m = n.midi;
-            let cx: number;
-            if (isWhite(m)) {
-              cx = whiteX[m] + whiteW / 2;
-            } else {
-              const prevWhite = m - 1;
-              cx = (whiteX[prevWhite] ?? 0) + whiteW;
-            }
-            // 同じ音が複数回出る場合は、最初の出現のみ表示
-            const firstStep = lick.findIndex((x) => x.midi === m);
-            if (firstStep !== step) return null;
-            return (
-              <text
-                key={`step-${step}`}
-                x={cx}
-                y={12}
-                textAnchor="middle"
-                fontSize={9}
-                fontWeight={700}
-                fill={hot === step ? "var(--amber)" : "var(--muted)"}
-                fontFamily="var(--font-mono)"
-              >
-                {step + 1}
-              </text>
-            );
-          })}
       </svg>
     </div>
   );
